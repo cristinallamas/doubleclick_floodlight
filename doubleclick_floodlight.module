@@ -1,0 +1,108 @@
+<?php
+/**
+ * Implements hook_help().
+ */
+function doubleclick_floodlight_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#doubleclick_floodlight':
+      $output = '<p>' . t('The Doubleclick Floodlight module allows you to integrate Floodlight Tags onto your site.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function doubleclick_floodlight_permission() {
+  return array(
+    'administer doubleclick_floodlight' => array(
+      'title' => t('Administer Doubleclick Floodlight'),
+      'description' => t('Users can enable, edit, and disable Doubleclick Floodlight tag.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
+  $theme_hooks = array(
+    'doubleclick_floodlight_tag' => array(
+      'variables' => array(
+        'arguments' => array(
+          'user_id' => variable_get('doubleclick_floodlight_user_id'),
+          'type' => variable_get('doubleclick_floodlight_type'),
+          'cat' => variable_get('doubleclick_floodlight_cat')
+      ),
+      'template' => 'theme/doubleclick_floodlight_tag',
+      ),
+    )
+  );
+  return $theme_hooks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function doubleclick_floodlight_get_block_view(){
+  return theme('doubleclick_floodlight_tag', array(
+      'account_id' => variable_get('doubleclick_floodlight_account_id'),
+      'type' => variable_get('doubleclick_floodlight_type'),
+      'cat' => variable_get('doubleclick_floodlight_cat'),
+    )
+  );
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function doubleclick_floodlight_menu() {
+  $items = array();
+
+  $items['admin/config/services/floodlight'] = array(
+    'title' => t('Doubleclick Floodlight Settings'),
+    'type' => MENU_LOCAL_TASK,
+    'description' => t("Configure tag parameters."),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('doubleclick_floodlight_admin_settings'),
+    'access arguments' => array('administer doubleclick_floodlight'),
+    'file' => 'doubleclick_floodlight.admin.inc',
+    'weight' => 5,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function doubleclick_floodlight_block_info() {
+  $blocks = array();
+  $blocks['doubleclick_floodlight'] = array(
+    'info' => t('Doubleclick Floodlight Tag'),
+    'status'     => TRUE,
+    'weight'     => 0,
+    'visibility' => 0,
+    'pages'      => 'admin',
+  );
+
+  return $blocks;
+}
+
+//implementation of hook_block_view
+function doubleclick_floodlight_block_view($delta='') {
+  $block = array();
+
+  switch($delta) {
+    case 'doubleclick_floodlight' :
+      $block['content'] = doubleclick_floodlight_get_block_view();
+      break;
+  }
+  return $block;
+}
+
+
+
+

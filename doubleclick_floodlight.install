@@ -1,0 +1,9 @@
+<?php
+/**
+ * Implements hook_uninstall().
+ */
+function doubleclick_floodlight_uninstall() {
+  db_delete('variable')
+    ->condition('name', "doubleclick_floodlight_%", "LIKE")
+    ->execute();
+}
