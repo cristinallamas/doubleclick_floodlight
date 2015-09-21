@@ -1,8 +1,13 @@
 <?php
 /**
+ * @file
+ * Functions for the doubleclick_floodlight tag module.
+ */
+
+/**
  * Implements hook_help().
  */
-function doubleclick_floodlight_help($path, $arg) {
+function doubleclick_floodlight_help($path) {
   switch ($path) {
     case 'admin/help#doubleclick_floodlight':
       $output = '<p>' . t('The Doubleclick Floodlight module allows you to integrate Floodlight Tags onto your site.') . '</p>';
@@ -25,18 +30,18 @@ function doubleclick_floodlight_permission() {
 /**
  * Implements hook_theme().
  */
-function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
+function doubleclick_floodlight_theme() {
   $theme_hooks = array(
     'doubleclick_floodlight_tag' => array(
       'variables' => array(
         'arguments' => array(
           'user_id' => variable_get('doubleclick_floodlight_user_id'),
           'type' => variable_get('doubleclick_floodlight_type'),
-          'cat' => variable_get('doubleclick_floodlight_cat')
+          'cat' => variable_get('doubleclick_floodlight_cat'),
         ),
         'template' => 'theme/doubleclick_floodlight_tag',
       ),
-    )
+    ),
   );
   return $theme_hooks;
 }
@@ -61,9 +66,9 @@ function doubleclick_floodlight_menu() {
   $items = array();
 
   $items['admin/config/services/floodlight'] = array(
-    'title' => t('Doubleclick Floodlight Settings'),
+    'title' => 'Doubleclick Floodlight Settings',
     'type' => MENU_LOCAL_TASK,
-    'description' => t("Configure tag parameters."),
+    'description' => "Configure tag parameters.",
     'page callback' => 'drupal_get_form',
     'page arguments' => array('doubleclick_floodlight_admin_settings'),
     'access arguments' => array('administer doubleclick_floodlight'),
@@ -91,12 +96,14 @@ function doubleclick_floodlight_block_info() {
   return $blocks;
 }
 
-//implementation of hook_block_view
+/**
+ * Implements hook_block_view().
+ */
 function doubleclick_floodlight_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
-    case 'doubleclick_floodlight' :
+    case 'doubleclick_floodlight':
       $block['content'] = doubleclick_floodlight_get_block_view();
       break;
   }
