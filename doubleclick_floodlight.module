@@ -33,8 +33,8 @@ function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
           'user_id' => variable_get('doubleclick_floodlight_user_id'),
           'type' => variable_get('doubleclick_floodlight_type'),
           'cat' => variable_get('doubleclick_floodlight_cat')
-      ),
-      'template' => 'theme/doubleclick_floodlight_tag',
+        ),
+        'template' => 'theme/doubleclick_floodlight_tag',
       ),
     )
   );
@@ -44,7 +44,7 @@ function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
 /**
  * Implements hook_block_view().
  */
-function doubleclick_floodlight_get_block_view(){
+function doubleclick_floodlight_get_block_view() {
   return theme('doubleclick_floodlight_tag', array(
       'account_id' => variable_get('doubleclick_floodlight_account_id'),
       'type' => variable_get('doubleclick_floodlight_type'),
@@ -82,27 +82,23 @@ function doubleclick_floodlight_block_info() {
   $blocks = array();
   $blocks['doubleclick_floodlight'] = array(
     'info' => t('Doubleclick Floodlight Tag'),
-    'status'     => TRUE,
-    'weight'     => 0,
+    'status' => TRUE,
+    'weight' => 0,
     'visibility' => 0,
-    'pages'      => 'admin',
+    'pages' => 'admin',
   );
 
   return $blocks;
 }
 
 //implementation of hook_block_view
-function doubleclick_floodlight_block_view($delta='') {
+function doubleclick_floodlight_block_view($delta = '') {
   $block = array();
 
-  switch($delta) {
+  switch ($delta) {
     case 'doubleclick_floodlight' :
       $block['content'] = doubleclick_floodlight_get_block_view();
       break;
   }
   return $block;
 }
-
-
-
-
