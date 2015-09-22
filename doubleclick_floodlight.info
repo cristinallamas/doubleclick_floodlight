@@ -5,4 +5,3 @@ package = Advertising
 configure = admin/config/services/floodlight
 dependencies[] = system
 dependencies[] = ctools
-dependencies[] = vertical_tabs
