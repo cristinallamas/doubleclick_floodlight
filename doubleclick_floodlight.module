@@ -34,13 +34,11 @@ function doubleclick_floodlight_theme() {
   $theme_hooks = array(
     'doubleclick_floodlight_tag' => array(
       'variables' => array(
-        'arguments' => array(
-          'user_id' => variable_get('doubleclick_floodlight_account_id'),
-          'type' => variable_get('doubleclick_floodlight_type'),
-          'cat' => variable_get('doubleclick_floodlight_cat'),
-        ),
-        'template' => 'theme/doubleclick_floodlight_tag',
+        'account_id' => variable_get('doubleclick_floodlight_account_id'),
+        'type' => variable_get('doubleclick_floodlight_type'),
+        'cat' => variable_get('doubleclick_floodlight_cat'),
       ),
+      'template' => 'theme/doubleclick_floodlight_tag',
     ),
   );
   return $theme_hooks;
