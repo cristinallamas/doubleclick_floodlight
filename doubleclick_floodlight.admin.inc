@@ -59,10 +59,12 @@ function doubleclick_floodlight_admin_settings($form) {
  */
 function doubleclick_floodlight_admin_form_validate($element) {
   $settings = $element['required_tag_settings'];
+  // Account id is required.
   if (empty($settings['doubleclick_floodlight_account_id']['#value']) || $settings['doubleclick_floodlight_account_id']['#value'] == '') {
-    form_error($settings['doubleclick_floodlight_account_id'], t('You need to enter a user id.'));
+    form_error($settings['doubleclick_floodlight_account_id'], t('You need to enter a account id.'));
   }
+  // The account id must be numeric.
   if (!is_numeric($settings['doubleclick_floodlight_account_id']['#value'])) {
-    form_error($settings['doubleclick_floodlight_account_id'], t('You need to enter a numeric user id.'));
+    form_error($settings['doubleclick_floodlight_account_id'], t('You need to enter a numeric account id.'));
   }
 }
