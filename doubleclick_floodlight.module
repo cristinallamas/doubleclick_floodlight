@@ -28,36 +28,6 @@ function doubleclick_floodlight_permission() {
 }
 
 /**
- * Implements hook_theme().
- */
-function doubleclick_floodlight_theme() {
-  $theme_hooks = array(
-    'doubleclick_floodlight_tag' => array(
-      'variables' => array(
-        'account_id' => variable_get('doubleclick_floodlight_account_id'),
-        'type' => variable_get('doubleclick_floodlight_type'),
-        'cat' => variable_get('doubleclick_floodlight_cat'),
-      ),
-      'template' => 'theme/doubleclick_floodlight_tag',
-    ),
-  );
-  return $theme_hooks;
-}
-
-/**
- * Implements hook_block_view().
- */
-function doubleclick_floodlight_get_block_view() {
-  return theme('doubleclick_floodlight_tag', array(
-      'account_id' => variable_get('doubleclick_floodlight_account_id'),
-      'type' => variable_get('doubleclick_floodlight_type'),
-      'cat' => variable_get('doubleclick_floodlight_cat'),
-    )
-  );
-}
-
-
-/**
  * Implements hook_menu().
  */
 function doubleclick_floodlight_menu() {
@@ -77,33 +47,68 @@ function doubleclick_floodlight_menu() {
   return $items;
 }
 
-
 /**
- * Implements hook_block_info().
+ * Implements hook_page_build().
  */
-function doubleclick_floodlight_block_info() {
-  $blocks = array();
-  $blocks['doubleclick_floodlight'] = array(
-    'info' => t('Doubleclick Floodlight Tag'),
-    'status' => TRUE,
-    'weight' => 0,
-    'visibility' => 0,
-    'pages' => 'admin',
-  );
+function doubleclick_floodlight_page_build(&$page) {
+  $enabled = variable_get('doubleclick_floodlight_enabled', 0);
+  // If doubleclick_floodlight is enabled and configured we want to display it on all pages except admin pages.
+  if ($enabled && !path_is_admin(current_path())) {
+    $region = variable_get('doubleclick_floodlight_region', 'page_top');
+    $account_id = variable_get('doubleclick_floodlight_account_id', '');
+    $type = variable_get('doubleclick_floodlight_type', '');
+    $cat = variable_get('doubleclick_floodlight_cat', '');
+    $show_standard = variable_get('doubleclick_floodlight_show_standard', 0);
+    $show_unique = variable_get('doubleclick_floodlight_show_unique', 0);
 
-  return $blocks;
+    if (!empty($account_id)) {
+      if ($show_standard) {
+        $std_pix = doubleclick_floodlight_standard_pixel($account_id, $type, $cat);
+        $page[$region]['doubleclick_floodlight_std'] = array(
+          '#markup' => $std_pix,
+        );
+      }
+
+      if ($show_unique) {
+        $uniq_pix = doubleclick_floodlight_unique_pixel($account_id, $type, $cat);
+        $page[$region]['doubleclick_floodlight_uniq'] = array(
+          '#markup' => $uniq_pix,
+        );
+      }
+    }
+  }
 }
 
 /**
- * Implements hook_block_view().
+ * Helper function to get the Standard doubleclick pixel.
  */
-function doubleclick_floodlight_block_view($delta = '') {
-  $block = array();
+function doubleclick_floodlight_standard_pixel($account_id, $type, $cat) {
+  $script = array(
+    '<script type="text/javascript">',
+    'var axel = Math.random() + "";',
+    'var a = axel * 10000000000000;',
+    'document.write(\'<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=\' + a + \'?" width="1" height="1" frameborder="0" style="display:none"></iframe>\');',
+    '</script>',
+    '<noscript>',
+    '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+    '</noscript>',
+  );
+  return implode(PHP_EOL, $script);
+}
 
-  switch ($delta) {
-    case 'doubleclick_floodlight':
-      $block['content'] = doubleclick_floodlight_get_block_view();
-      break;
-  }
-  return $block;
+/**
+ * Helper function to get the Unique doubleclick pixel.
+ */
+function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
+  $script = array(
+    '<script type="text/javascript">',
+    'var axel = Math.random() + "";',
+    'var a = axel * 10000000000000;',
+    'document.write(\'<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=1;num=\' + a + \'?" width="1" height="1" frameborder="0" style="display:none"></iframe>\');',
+    '</script>',
+    '<noscript>',
+    '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $type . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+    '</noscript>'
+  );
+  return implode(PHP_EOL, $script);
 }

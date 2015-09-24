@@ -7,7 +7,6 @@
  * Form builder for the global floodlight settings form.
  */
 function doubleclick_floodlight_admin_settings($form) {
-  $form['#validate'][] = 'doubleclick_floodlight_admin_form_validate';
   // Required settings.
   $form['required_tag_settings'] = array(
     '#type' => 'fieldset',
@@ -16,12 +15,14 @@ function doubleclick_floodlight_admin_settings($form) {
     '#collapsed' => FALSE,
     '#group' => 'settings',
   );
+
   $form['required_tag_settings']['doubleclick_floodlight_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable / Disable'),
     '#default_value' => variable_get('doubleclick_floodlight_enabled', 1),
     '#description' => t('Sets if the tag will be showing or will be hidden.'),
   );
+
   $form['required_tag_settings']['doubleclick_floodlight_account_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Account ID'),
@@ -29,6 +30,21 @@ function doubleclick_floodlight_admin_settings($form) {
     '#required' => TRUE,
     '#description' => t('Floodlight account id.'),
   );
+
+  $form['required_tag_settings']['doubleclick_floodlight_show_standard'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show Standard Tracking pixel'),
+    '#default_value' => variable_get('doubleclick_floodlight_show_standard', 0),
+    '#description' => t('Standard tracking pixel will be displayed if enabled.'),
+  );
+
+  $form['required_tag_settings']['doubleclick_floodlight_show_unique'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show Unique Tracking pixel'),
+    '#default_value' => variable_get('doubleclick_floodlight_show_unique', 0),
+    '#description' => t('Unique tracking pixel will be displayed if enabled.'),
+  );
+
   // Optional parameters.
   $form['optional_tag_settings'] = array(
     '#type' => 'fieldset',
@@ -37,6 +53,7 @@ function doubleclick_floodlight_admin_settings($form) {
     '#collapsed' => FALSE,
     '#group' => 'settings',
   );
+
   $form['optional_tag_settings']['doubleclick_floodlight_type'] = array(
     '#type' => 'textfield',
     '#title' => t('Type - Group Tag String'),
@@ -45,26 +62,33 @@ function doubleclick_floodlight_admin_settings($form) {
     '#default_value' => variable_get('doubleclick_floodlight_type', ''),
     '#description' => t('Group Tag String'),
   );
+
   $form['optional_tag_settings']['doubleclick_floodlight_cat'] = array(
     '#type' => 'textfield',
     '#title' => t('Cat - Activity Tag String'),
     '#default_value' => variable_get('doubleclick_floodlight_cat', ''),
     '#description' => t('Activity Tag String'),
   );
+
+  $theme_default = variable_get('theme_default', 'bartik');
+  $regions = system_region_list($theme_default);
+  $form['optional_tag_settings']['doubleclick_floodlight_region'] = array(
+    '#type' => 'select',
+    '#options' => $regions,
+    '#title' => t('Region where pixels will be added.'),
+    '#default_value' => variable_get('doubleclick_floodlight_region', 'page_top'),
+    '#description' => t('Select region which is first after the opening <body> tag.'),
+  );
   return system_settings_form($form);
 }
 
 /**
- * Submit handler for the global settings form.
+ * Validate handler for the global settings form.
  */
-function doubleclick_floodlight_admin_form_validate($element) {
-  $settings = $element['required_tag_settings'];
+function doubleclick_floodlight_admin_settings_validate($form, &$form_state) {
+  $settings = $form_state['values'];
   // Account id is required.
-  if (empty($settings['doubleclick_floodlight_account_id']['#value']) || $settings['doubleclick_floodlight_account_id']['#value'] == '') {
-    form_error($settings['doubleclick_floodlight_account_id'], t('You need to enter a account id.'));
-  }
-  // The account id must be numeric.
-  if (!is_numeric($settings['doubleclick_floodlight_account_id']['#value'])) {
-    form_error($settings['doubleclick_floodlight_account_id'], t('You need to enter a numeric account id.'));
+  if (empty($settings['doubleclick_floodlight_account_id']) || !is_numeric($settings['doubleclick_floodlight_account_id'])) {
+    form_set_error('doubleclick_floodlight_account_id', t('You need to enter a valid account id.'));
   }
 }

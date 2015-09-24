@@ -8,7 +8,12 @@
  * Implements hook_uninstall().
  */
 function doubleclick_floodlight_uninstall() {
-  db_delete('variable')
-    ->condition('name', "doubleclick_floodlight_%", "LIKE")
-    ->execute();
+  variable_del('doubleclick_floodlight_enabled');
+  variable_del('doubleclick_floodlight_account_id');
+  variable_del('doubleclick_floodlight_type');
+  variable_del('doubleclick_floodlight_cat');
+  variable_del('doubleclick_floodlight_show_standard');
+  variable_del('doubleclick_floodlight_show_unique');
+  variable_del('doubleclick_floodlight_region');
+  
 }
