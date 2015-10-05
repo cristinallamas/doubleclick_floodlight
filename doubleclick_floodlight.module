@@ -107,7 +107,7 @@ function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
     'document.write(\'<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=1;num=\' + a + \'?" width="1" height="1" frameborder="0" style="display:none"></iframe>\');',
     '</script>',
     '<noscript>',
-    '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $type . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+    '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $cat . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '</noscript>'
   );
   return implode(PHP_EOL, $script);
