@@ -1,8 +1,36 @@
-Module to integrate the Doubleclick Floodlight tags into a Drupal site.
+CONTENTS OF THIS FILE
+---------------------
 
-Floodlight requires a javascript snippet to be added between the and tags.
-It will stuff in a tracking pixel into a desired region.
-The user id and other custom parameters would be added as variables.
+ * Introduction
+ * Requirements
+ * Installation
+ * Configuration
 
-To use  enable the module and go to admin/config/services/floodlight
-there you can fill in the account id.
+ INTRODUCTION
+ ------------
+ Module to integrate the Doubleclick Floodlight tags into a Drupal site.
+ Floodlight requires  snippet to be added between the <body> and </body> tags.
+ It will stuff in a tracking pixel into a desired region.
+ The user id and other custom parameters would be added as variables.
+
+REQUIREMENTS
+------------
+
+This module requires the following modules:
+
+ * Ctools (https://www.drupal.org/project/ctools)
+
+INSTALLATION
+------------
+
+ * Install as you would normally install a contributed Drupal module. See:
+   https://drupal.org/documentation/install/modules-themes/modules-7
+   for further information.
+
+CONFIGURATION
+-------------
+
+ * Configure user permissions in Administration » People » Permissions:
+
+ * Customize the module: Administration » Configuration »
+   Web Services » Doubleclick Floodlight Settings.
