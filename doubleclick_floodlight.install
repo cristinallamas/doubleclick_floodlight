@@ -15,5 +15,4 @@ function doubleclick_floodlight_uninstall() {
   variable_del('doubleclick_floodlight_show_standard');
   variable_del('doubleclick_floodlight_show_unique');
   variable_del('doubleclick_floodlight_region');
-  
 }

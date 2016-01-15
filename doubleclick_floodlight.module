@@ -52,7 +52,7 @@ function doubleclick_floodlight_menu() {
  */
 function doubleclick_floodlight_page_build(&$page) {
   $enabled = variable_get('doubleclick_floodlight_enabled', 0);
-  // If doubleclick_floodlight is enabled and configured we want to display it on all pages except admin pages.
+  // If module enabled & configured we'll display it on all pages but admin.
   if ($enabled && !path_is_admin(current_path())) {
     $region = variable_get('doubleclick_floodlight_region', 'page_top');
     $account_id = variable_get('doubleclick_floodlight_account_id', '');
@@ -87,12 +87,12 @@ function doubleclick_floodlight_standard_pixel($account_id, $type, $cat) {
     '<iframe id="doubleclick_floodlight_standard_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '<script type="text/javascript">',
     '(function(){',
-    'var url = \'https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=\' + Math.random() * 10000000000000 + \'?\';',
+    'var url = \'https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $cat . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
     'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
     '})();',
     '</script>',
     '<noscript>',
-    '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+    '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $cat . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '</noscript>',
   );
   return implode(PHP_EOL, $script);
@@ -106,13 +106,13 @@ function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
     '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '<script type="text/javascript">',
     '(function(){',
-    'var url = \'https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' .$cat. ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
+    'var url = \'https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $cat . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
     'document.getElementById(\'doubleclick_floodlight_unique_pixel\').setAttribute(\'src\', url);',
     '})();',
     '</script>',
     '<noscript>',
     '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $cat . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-    '</noscript>'
-  );
+    '</noscript>',
+    );
   return implode(PHP_EOL, $script);
 }
