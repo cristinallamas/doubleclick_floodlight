@@ -1,9 +1,10 @@
 <?php
+
 /**
- * Admin forms and functinality for floodlight tags.
  * @file
- *
+ * Admin forms and functinality for floodlight tags.
  */
+
 /**
  * Form builder for the global floodlight settings form.
  */
