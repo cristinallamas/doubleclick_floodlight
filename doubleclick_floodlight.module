@@ -113,6 +113,6 @@ function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
     '<noscript>',
     '<iframe src="https://' . $account_id . '.fls.doubleclick.net/activityi;src=' . $account_id . ';type=' . $type . ';cat=' . $cat . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '</noscript>',
-    );
+  );
   return implode(PHP_EOL, $script);
 }
