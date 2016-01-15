@@ -10,22 +10,22 @@
  */
 function doubleclick_floodlight_admin_settings($form) {
   // Required settings.
-  $form['required_tag_settings'] = array(
+  $form['main_tag_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Required Tag Settings'),
+    '#title' => t('Main Tag Settings'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#group' => 'settings',
   );
 
-  $form['required_tag_settings']['doubleclick_floodlight_enabled'] = array(
+  $form['main_tag_settings']['doubleclick_floodlight_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable / Disable'),
     '#default_value' => variable_get('doubleclick_floodlight_enabled', 1),
     '#description' => t('Sets if the tag will be showing or will be hidden.'),
   );
 
-  $form['required_tag_settings']['doubleclick_floodlight_account_id'] = array(
+  $form['main_tag_settings']['doubleclick_floodlight_account_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Account ID'),
     '#default_value' => variable_get('doubleclick_floodlight_account_id', ''),
@@ -33,14 +33,14 @@ function doubleclick_floodlight_admin_settings($form) {
     '#description' => t('Floodlight account id.'),
   );
 
-  $form['required_tag_settings']['doubleclick_floodlight_show_standard'] = array(
+  $form['main_tag_settings']['doubleclick_floodlight_show_standard'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show Standard Tracking pixel'),
     '#default_value' => variable_get('doubleclick_floodlight_show_standard', 0),
     '#description' => t('Standard tracking pixel will be displayed if enabled.'),
   );
 
-  $form['required_tag_settings']['doubleclick_floodlight_show_unique'] = array(
+  $form['main_tag_settings']['doubleclick_floodlight_show_unique'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show Unique Tracking pixel'),
     '#default_value' => variable_get('doubleclick_floodlight_show_unique', 0),

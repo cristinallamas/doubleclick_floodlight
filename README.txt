@@ -2,7 +2,6 @@ CONTENTS OF THIS FILE
 ---------------------
 
  * Introduction
- * Requirements
  * Installation
  * Configuration
 
@@ -13,12 +12,6 @@ CONTENTS OF THIS FILE
  It will stuff in a tracking pixel into a desired region.
  The user id and other custom parameters would be added as variables.
 
-REQUIREMENTS
-------------
-
-This module requires the following modules:
-
- * Ctools (https://www.drupal.org/project/ctools)
 
 INSTALLATION
 ------------
