@@ -20,7 +20,7 @@ function doubleclick_floodlight_help($path) {
  */
 function doubleclick_floodlight_permission() {
   return array(
-    'administer doubleclick_floodlight' => array(
+    'administer doubleclick floodlight' => array(
       'title' => t('Administer Doubleclick Floodlight'),
       'description' => t('Users can enable, edit, and disable Doubleclick Floodlight tag.'),
     ),
