@@ -3,81 +3,95 @@
  * @file
  * Functions for the doubleclick_floodlight tag module.
  */
+use Drupal\Core\Routing\RouteMatchInterface;
+
 
 /**
  * Implements hook_help().
  */
-function doubleclick_floodlight_help($path) {
-  switch ($path) {
-    case 'admin/help#doubleclick_floodlight':
-      $output = '<p>' . t('The Doubleclick Floodlight module allows you to integrate Floodlight Tags onto your site.') . '</p>';
+function doubleclick_floodlight_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'sharerich.admin_settings_form':
+      $output = '';
+      $output .= '<p>' . t('The Doubleclick Floodlight module allows you to integrate Floodlight Tags onto your site, You can manage your Floodlight sets at <a href=":menu-settings">Config > Doubleclick Floodlight</a>.', array(':menu-settings' => \Drupal::url('doubleclick_floodlight.admin_settings_form'))) . '</p>';
       return $output;
+      break;
+
+    default:
   }
 }
 
 /**
- * Implements hook_permission().
+ * Implements hook_page_attachments_alter().
  */
-function doubleclick_floodlight_permission() {
-  return array(
-    'administer doubleclick floodlight' => array(
-      'title' => t('Administer Doubleclick Floodlight'),
-      'description' => t('Users can enable, edit, and disable Doubleclick Floodlight tag.'),
-    ),
-  );
-}
-
-/**
- * Implements hook_menu().
- */
-function doubleclick_floodlight_menu() {
-  $items = array();
-
-  $items['admin/config/services/floodlight'] = array(
-    'title' => 'Doubleclick Floodlight Settings',
-    'type' => MENU_LOCAL_TASK,
-    'description' => "Configure tag parameters.",
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('doubleclick_floodlight_admin_settings'),
-    'access arguments' => array('administer doubleclick floodlight'),
-    'file' => 'doubleclick_floodlight.admin.inc',
-    'weight' => 5,
-  );
-
-  return $items;
-}
-
-/**
- * Implements hook_page_build().
- */
-function doubleclick_floodlight_page_build(&$page) {
-  $enabled = variable_get('doubleclick_floodlight_enabled', 0);
+function doubleclick_floodlight_page_attachments_alter(array &$page) {
+  // Inject code into the 'head' scope.
+  $config = \Drupal::config('doubleclick_floodlight.settings');
+  $enabled = $config->get('doubleclick_floodlight_enabled');
+  $is_admin = \Drupal::service('router.admin_context')->isAdminRoute();
   // If module enabled & configured we'll display it on all pages but admin.
-  if ($enabled && !path_is_admin(current_path())) {
-    $region = variable_get('doubleclick_floodlight_region', 'page_top');
-    $account_id = variable_get('doubleclick_floodlight_account_id', '');
-    $type = variable_get('doubleclick_floodlight_type', '');
-    $cat = variable_get('doubleclick_floodlight_cat', '');
-    $show_standard = variable_get('doubleclick_floodlight_show_standard', 0);
-    $show_unique = variable_get('doubleclick_floodlight_show_unique', 0);
+  if ($enabled && !$is_admin) {
+    $region = $config->get('doubleclick_floodlight_region');
+    $account_id = $config->get('doubleclick_floodlight_account_id');
+    $type = $config->get('doubleclick_floodlight_type');
+    $cat = $config->get('doubleclick_floodlight_cat');
+    $show_standard = $config->get('doubleclick_floodlight_show_standard');
+    $show_unique = $config->get('doubleclick_floodlight_show_unique');
+    $script='';
+
+
+//    $js_settings = array(
+//      'region' => $region,
+//      'account_id' => $account_id,
+//      'type' => $type,
+//      'cat' => $cat,
+//      'show_standard' => $show_standard,
+//      'show_unique' => $show_unique,
+//    );
+
+//    $page['#attached']['drupalSettings']['doubleclick_floodlight'] = $js_settings;
+//    $page['#attached']['library'][] = 'doubleclick_floodlight/doubleclick_floodlight';
+
 
     if (!empty($account_id)) {
       if ($show_standard) {
         $std_pix = doubleclick_floodlight_standard_pixel($account_id, $type, $cat);
-        $page[$region]['doubleclick_floodlight_std'] = array(
-          '#markup' => $std_pix,
-        );
+        $script .= $std_pix;
       }
 
       if ($show_unique) {
         $uniq_pix = doubleclick_floodlight_unique_pixel($account_id, $type, $cat);
-        $page[$region]['doubleclick_floodlight_uniq'] = array(
-          '#markup' => $uniq_pix,
-        );
+        $script .= $uniq_pix;
       }
     }
   }
+
+//  kprint_r($script);
+//  $page['#attached']['drupalSettings']['doubleclick_floodlight'] = $config;
+
+  kprint_r($page['#attached']['html_head']);
+
+  $page['#attached']['html_head'][] = [
+    [
+      '#tag' => 'script',
+      '#type' => 'markup',
+      '#type' => 'html_tag',
+
+//      '#markup' => $script,
+      '#value' => $script,
+//      '#weight' => JS_LIBRARY - 1,
+
+
+    ],
+    'doubleclick_floodlight_pixel',
+  ];
+
+  kprint_r($page['#attached']['html_head']);
+  kprint_r($script);
+
 }
+
+
 
 /**
  * Helper function to get the Standard doubleclick pixel.
@@ -87,12 +101,12 @@ function doubleclick_floodlight_standard_pixel($account_id, $type, $cat) {
     '<iframe id="doubleclick_floodlight_standard_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '<script type="text/javascript">',
     '(function(){',
-    'var url = \'https://' . check_plain($account_id) . '.fls.doubleclick.net/activityi;src=' . check_plain($account_id) . ';type=' . check_plain($type) . ';cat=' . check_plain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
+    'var url = \'https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
     'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
     '})();',
     '</script>',
     '<noscript>',
-    '<iframe src="https://' . check_plain($account_id) . '.fls.doubleclick.net/activityi;src=' . check_plain($account_id) . ';type=' . check_plain($type) . ';cat=' . check_plain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+    '<iframe src="https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '</noscript>',
   );
   return implode(PHP_EOL, $script);
@@ -106,12 +120,12 @@ function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
     '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '<script type="text/javascript">',
     '(function(){',
-    'var url = \'https://' . check_plain($account_id) . '.fls.doubleclick.net/activityi;src=' . check_plain($account_id) . ';type=' . check_plain($type) . ';cat=' . check_plain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
+    'var url = \'https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
     'document.getElementById(\'doubleclick_floodlight_unique_pixel\').setAttribute(\'src\', url);',
     '})();',
     '</script>',
     '<noscript>',
-    '<iframe src="https://' . check_plain($account_id) . '.fls.doubleclick.net/activityi;src=' . check_plain($account_id) . ';type=' . check_plain($type) . ';cat=' . check_plain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+    '<iframe src="https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '</noscript>',
   );
   return implode(PHP_EOL, $script);

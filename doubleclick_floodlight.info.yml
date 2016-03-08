@@ -1,0 +1,6 @@
+name: 'DoubleClick Floodlight'
+description: 'Integrates DoubleClick Floodlight Tags onto a site.'
+core: 8.x
+package: Advertising
+type: module
+configure: doubleclick_floodlight.admin_settings_form

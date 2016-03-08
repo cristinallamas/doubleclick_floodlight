@@ -1,5 +1,0 @@
-name = DoubleClick Floodlight
-description = Integrates DoubleClick Floodlight Tags onto a site.
-core = 7.x
-package = Advertising
-configure = admin/config/services/floodlight

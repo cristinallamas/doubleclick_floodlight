@@ -1,0 +1,7 @@
+#doubleclick_floodlight:
+#  version: 1.0
+#  js:
+#    js/doubleclick_floodlight.js: {}
+#  dependencies:
+#    - core/jquery
+#    - core/jquery.once

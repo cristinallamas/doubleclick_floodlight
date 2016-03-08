@@ -1,0 +1,9 @@
+doubleclick_floodlight.admin_settings_form:
+  path: /admin/config/doubleclick/settings
+  defaults:
+    _title: 'Doubleclick Floodlight Settings'
+    _form: \Drupal\doubleclick_floodlight\Form\AdminSettingsForm
+  requirements:
+    _permission: 'administer doubleclick floodlight'
+  options:
+    _admin_route: TRUE
