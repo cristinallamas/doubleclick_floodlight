@@ -3,7 +3,11 @@
  * @file
  * Functions for the doubleclick_floodlight tag module.
  */
+
+
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\SafeMarkup;
 
 
 /**
@@ -20,96 +24,102 @@ function doubleclick_floodlight_help($route_name, RouteMatchInterface $route_mat
     default:
   }
 }
-
 /**
- * Implements hook_page_attachments_alter().
+ * Implements hook_theme().
  */
-function doubleclick_floodlight_page_attachments_alter(array &$page) {
-  // Inject code into the 'head' scope.
-  $config = \Drupal::config('doubleclick_floodlight.settings');
-  $enabled = $config->get('doubleclick_floodlight_enabled');
-  $is_admin = \Drupal::service('router.admin_context')->isAdminRoute();
-  // If module enabled & configured we'll display it on all pages but admin.
-  if ($enabled && !$is_admin) {
-    $region = $config->get('doubleclick_floodlight_region');
-    $account_id = $config->get('doubleclick_floodlight_account_id');
-    $type = $config->get('doubleclick_floodlight_type');
-    $cat = $config->get('doubleclick_floodlight_cat');
-    $show_standard = $config->get('doubleclick_floodlight_show_standard');
-    $show_unique = $config->get('doubleclick_floodlight_show_unique');
-    $script='';
-
-
-//    $js_settings = array(
-//      'region' => $region,
-//      'account_id' => $account_id,
-//      'type' => $type,
-//      'cat' => $cat,
-//      'show_standard' => $show_standard,
-//      'show_unique' => $show_unique,
-//    );
-
-//    $page['#attached']['drupalSettings']['doubleclick_floodlight'] = $js_settings;
-//    $page['#attached']['library'][] = 'doubleclick_floodlight/doubleclick_floodlight';
-
-
-    if (!empty($account_id)) {
-      if ($show_standard) {
-        $std_pix = doubleclick_floodlight_standard_pixel($account_id, $type, $cat);
-        $script .= $std_pix;
-      }
-
-      if ($show_unique) {
-        $uniq_pix = doubleclick_floodlight_unique_pixel($account_id, $type, $cat);
-        $script .= $uniq_pix;
-      }
-    }
-  }
-
-//  kprint_r($script);
-//  $page['#attached']['drupalSettings']['doubleclick_floodlight'] = $config;
-
-  kprint_r($page['#attached']['html_head']);
-
-  $page['#attached']['html_head'][] = [
-    [
-      '#tag' => 'script',
-      '#type' => 'markup',
-      '#type' => 'html_tag',
-
-//      '#markup' => $script,
-      '#value' => $script,
-//      '#weight' => JS_LIBRARY - 1,
-
-
+function doubleclick_floodlight_theme() {
+  return [
+    'doubleclick_floodlight' => [
+      'template' => 'block--doubleclick_floodlight',
+      'variables' => ['account_id' => NULL, 'type' => NULL, 'cat' => NULL],
     ],
-    'doubleclick_floodlight_pixel',
   ];
-
-  kprint_r($page['#attached']['html_head']);
-  kprint_r($script);
-
 }
-
-
+/**
+ * Theme hook
+ */
+//function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
+//
+//  // make function maybe -------------------------------------------------
+//  $config = \Drupal::config('doubleclick_floodlight.settings');
+//
+//
+//  $region = $config->get('doubleclick_floodlight_region');
+//  $account_id = $config->get('doubleclick_floodlight_account_id');
+//  $type = $config->get('doubleclick_floodlight_type');
+//  $cat = $config->get('doubleclick_floodlight_cat');
+//  $show_standard = $config->get('doubleclick_floodlight_show_standard');
+//  $show_unique = $config->get('doubleclick_floodlight_show_unique');
+//
+//
+//
+//
+//  // ----------------------------------------------------------------
+//
+//  $script = array(
+//    '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+//    '<script type="text/javascript">',
+//    '(function(){',
+//    'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
+//    'document.getElementById(\'doubleclick_floodlight_unique_pixel\').setAttribute(\'src\', url);',
+//    '})();',
+//    '</script>',
+//    '<noscript>',
+//    '<iframe src="https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+//    '</noscript>',
+//  );
+//
+//  return array(
+//    'doubleclick_floodlight' => array(
+//      'variables' => array(
+//        'account_id' => null ,
+//        'cat' => null ,
+//        'type' => null ,
+////        'account_id' => SafeMarkup::checkPlain($account_id) ,
+////        'cat' => SafeMarkup::checkPlain($cat) ,
+////        'type' => SafeMarkup::checkPlain($type) ,
+////
+////        'markup' =>implode(PHP_EOL, $script),
+//      ),
+//      'template' => 'block--doubleclickfloodlight',
+//    )
+//  );
+//}
 
 /**
  * Helper function to get the Standard doubleclick pixel.
  */
 function doubleclick_floodlight_standard_pixel($account_id, $type, $cat) {
-  $script = array(
-    '<iframe id="doubleclick_floodlight_standard_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-    '<script type="text/javascript">',
-    '(function(){',
-    'var url = \'https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
-    'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
-    '})();',
-    '</script>',
-    '<noscript>',
-    '<iframe src="https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-    '</noscript>',
-  );
-  return implode(PHP_EOL, $script);
+
+   $script = array(
+//     'iframe' => array(),
+     'script' => array(
+       '<script type="text/javascript">',
+       '(function(){',
+       'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
+       'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
+       '})();',
+       '</script>',
+     ),
+     'noscript' => array(
+       '<noscript>',
+       '<iframe src="https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+       '</noscript>',
+     ),
+//     '<iframe id="doubleclick_floodlight_standard_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+     '<script type="text/javascript">',
+     '(function(){',
+     'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
+     'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
+     '})();',
+     '</script>',
+//     '<noscript>',
+//     '<iframe src="https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+//     '</noscript>',
+   );
+//   return implode(PHP_EOL, $script);
+    return $script;
+//
 }
 
 /**
@@ -117,16 +127,16 @@ function doubleclick_floodlight_standard_pixel($account_id, $type, $cat) {
  */
 function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
   $script = array(
-    '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+//    '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
     '<script type="text/javascript">',
     '(function(){',
-    'var url = \'https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
+    'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
     'document.getElementById(\'doubleclick_floodlight_unique_pixel\').setAttribute(\'src\', url);',
     '})();',
     '</script>',
-    '<noscript>',
-    '<iframe src="https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-    '</noscript>',
+//    '<noscript>',
+//    '<iframe src="https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
+//    '</noscript>',
   );
   return implode(PHP_EOL, $script);
 }
