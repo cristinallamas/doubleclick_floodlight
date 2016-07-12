@@ -1,4 +1,0 @@
-'administer doubleclick floodlight':
-  title: 'Administer floodlight'
-  description: 'Permission to allow user to configure floodlight.'
-  'restrict access': true

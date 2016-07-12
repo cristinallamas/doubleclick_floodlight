@@ -1,37 +1,38 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\doubleclick_floodlight\Form\AdminSettingsForm.
- */
-
 namespace Drupal\doubleclick_floodlight\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 
-
-class AdminSettingsForm extends ConfigFormBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId() {
-//    return 'doubleclick_floodlight_admin_settings_form';
-    return 'admin_settings_form';
-  }
+/**
+ * Class DoubleclickSettingsForm.
+ * @package Drupal\doubleclick_floodlight\Form
+ */
+class DoubleclickSettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['doubleclick_floodlight.settings'];
+    return [
+      'doubleclick_floodlight.DoubleclickSettings',
+    ];
   }
 
-  public function buildForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'doubleclick_settings_form';
+  }
 
-    $config = $this->config('doubleclick_floodlight.settings');
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $config = $this->config('doubleclick_floodlight.DoubleclickSettings');
+
 
     // Required settings.
     $form['main_tag_settings'] = [
@@ -107,15 +108,16 @@ class AdminSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('doubleclick_floodlight_region'),
       '#description' => t('Select region which is first after the opening <body> tag.'),
     ];
+
+
     return parent::buildForm($form, $form_state);
   }
 
-  public function validateForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-    $settings = $form_state->getValues();
-    // Account id is required.
-    if (empty($settings['doubleclick_floodlight_account_id']) || !is_numeric($settings['doubleclick_floodlight_account_id'])) {
-      $form_state->setErrorByName('doubleclick_floodlight_account_id', t('You need to enter a valid account id.'));
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
   }
 
   /**
@@ -124,7 +126,7 @@ class AdminSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('doubleclick_floodlight.settings')
+    $this->config('doubleclick_floodlight.DoubleclickSettings')
       ->set('doubleclick_floodlight_enabled', $form_state->getValue('doubleclick_floodlight_enabled'))
       ->set('doubleclick_floodlight_account_id', $form_state->getValue('doubleclick_floodlight_account_id'))
       ->set('doubleclick_floodlight_show_standard', $form_state->getValue('doubleclick_floodlight_show_standard'))

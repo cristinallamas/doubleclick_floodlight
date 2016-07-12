@@ -1,6 +1,5 @@
-name: 'DoubleClick Floodlight'
-description: 'Integrates DoubleClick Floodlight Tags onto a site.'
+name: Doubleclick Floodlight
+type: module
+description: Integration of Doubleclick Floodlight 3rd party Script
 core: 8.x
 package: Advertising
-type: module
-configure: doubleclick_floodlight.admin_settings_form

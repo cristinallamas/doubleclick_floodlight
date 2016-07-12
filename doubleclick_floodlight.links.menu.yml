@@ -1,5 +1,7 @@
-route_name: doubleclick_floodlight.admin_settings
-  description: 'Manage doubleclick_floodlight'
-  title: 'Doubleclick Floodlight Settings'
-  weight: 5
-  parent: system.admin_config_development
+doubleclick_floodlight.doubleclick_settings_form:
+  title: 'Doubleclick Settins'
+  route_name: doubleclick_floodlight.doubleclick_settings_form
+  description: 'A description for the menu entry'
+  parent: system.admin_config_system
+  weight: 99
+

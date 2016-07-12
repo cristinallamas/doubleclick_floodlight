@@ -1,142 +1,41 @@
 <?php
+
 /**
  * @file
- * Functions for the doubleclick_floodlight tag module.
+ * Contains doubleclick_floodlight.module..
  */
 
-
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\SafeMarkup;
-
 
 /**
  * Implements hook_help().
  */
 function doubleclick_floodlight_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
-    case 'sharerich.admin_settings_form':
+    // Main module help for the block_script module.
+    case 'help.page.doubleclick_floodlight':
       $output = '';
-      $output .= '<p>' . t('The Doubleclick Floodlight module allows you to integrate Floodlight Tags onto your site, You can manage your Floodlight sets at <a href=":menu-settings">Config > Doubleclick Floodlight</a>.', array(':menu-settings' => \Drupal::url('doubleclick_floodlight.admin_settings_form'))) . '</p>';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('My Awesome Module') . '</p>';
       return $output;
-      break;
 
     default:
   }
 }
-/**
- * Implements hook_theme().
- */
-function doubleclick_floodlight_theme() {
-  return [
-    'doubleclick_floodlight' => [
-      'template' => 'block--doubleclick_floodlight',
-      'variables' => ['account_id' => NULL, 'type' => NULL, 'cat' => NULL],
-    ],
-  ];
-}
-/**
- * Theme hook
- */
-//function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
-//
-//  // make function maybe -------------------------------------------------
-//  $config = \Drupal::config('doubleclick_floodlight.settings');
-//
-//
-//  $region = $config->get('doubleclick_floodlight_region');
-//  $account_id = $config->get('doubleclick_floodlight_account_id');
-//  $type = $config->get('doubleclick_floodlight_type');
-//  $cat = $config->get('doubleclick_floodlight_cat');
-//  $show_standard = $config->get('doubleclick_floodlight_show_standard');
-//  $show_unique = $config->get('doubleclick_floodlight_show_unique');
-//
-//
-//
-//
-//  // ----------------------------------------------------------------
-//
-//  $script = array(
-//    '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-//    '<script type="text/javascript">',
-//    '(function(){',
-//    'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
-//    'document.getElementById(\'doubleclick_floodlight_unique_pixel\').setAttribute(\'src\', url);',
-//    '})();',
-//    '</script>',
-//    '<noscript>',
-//    '<iframe src="https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-//    '</noscript>',
-//  );
-//
-//  return array(
-//    'doubleclick_floodlight' => array(
-//      'variables' => array(
-//        'account_id' => null ,
-//        'cat' => null ,
-//        'type' => null ,
-////        'account_id' => SafeMarkup::checkPlain($account_id) ,
-////        'cat' => SafeMarkup::checkPlain($cat) ,
-////        'type' => SafeMarkup::checkPlain($type) ,
-////
-////        'markup' =>implode(PHP_EOL, $script),
-//      ),
-//      'template' => 'block--doubleclickfloodlight',
-//    )
-//  );
-//}
 
-/**
- * Helper function to get the Standard doubleclick pixel.
- */
-function doubleclick_floodlight_standard_pixel($account_id, $type, $cat) {
-
-   $script = array(
-//     'iframe' => array(),
-     'script' => array(
-       '<script type="text/javascript">',
-       '(function(){',
-       'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
-       'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
-       '})();',
-       '</script>',
-     ),
-     'noscript' => array(
-       '<noscript>',
-       '<iframe src="https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-       '</noscript>',
-     ),
-//     '<iframe id="doubleclick_floodlight_standard_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-     '<script type="text/javascript">',
-     '(function(){',
-     'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=\' + Math.random() * 10000000000000 + \'?\';',
-     'document.getElementById(\'doubleclick_floodlight_standard_pixel\').setAttribute(\'src\', url);',
-     '})();',
-     '</script>',
-//     '<noscript>',
-//     '<iframe src="https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-//     '</noscript>',
-   );
-//   return implode(PHP_EOL, $script);
-    return $script;
-//
-}
-
-/**
- * Helper function to get the Unique doubleclick pixel.
- */
-function doubleclick_floodlight_unique_pixel($account_id, $type, $cat) {
-  $script = array(
-//    '<iframe id="doubleclick_floodlight_unique_pixel" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-    '<script type="text/javascript">',
-    '(function(){',
-    'var url = \'https://' . SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . SafeMarkup::checkPlain($account_id) . ';type=' . SafeMarkup::checkPlain($type) . ';cat=' . SafeMarkup::checkPlain($cat) . ';ord=1;num=\' + Math.random() * 10000000000000 + \'?\';',
-    'document.getElementById(\'doubleclick_floodlight_unique_pixel\').setAttribute(\'src\', url);',
-    '})();',
-    '</script>',
-//    '<noscript>',
-//    '<iframe src="https://' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . '.fls.doubleclick.net/activityi;src=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($account_id) . ';type=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($type) . ';cat=' . \Drupal\Component\Utility\SafeMarkup::checkPlain($cat) . ';ord=1;num=1?" width="1" height="1" frameborder="0" style="display:none"></iframe>',
-//    '</noscript>',
+function doubleclick_floodlight_theme($existing, $type, $theme, $path) {
+  return array(
+    'doubleclick_floodlight_block' => array(
+      'template' => 'doubleclick_floodlight_block',
+      'variables' => array(
+        'account_id' => NULL,
+        'type' => NULL,
+        'cat' => NULL,
+        'show_standard' => NULL,
+        'show_unique' => NULL,
+        'enabled' => NULL,
+        'region' => NULL,
+      ),
+    ),
   );
-  return implode(PHP_EOL, $script);
 }
